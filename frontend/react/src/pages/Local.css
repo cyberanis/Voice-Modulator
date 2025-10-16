@@ -1,0 +1,272 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+.TopLeftTitle {
+  position: absolute;
+  font-size: 0.4em;
+  left: 5%;
+  top: 8px;
+}
+
+.ControlBarContainer {
+  position: absolute;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: 15%;
+  left: 5%;
+  gap: 5px;
+}
+.ControlLine {
+  width: 100%;
+  height: 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(46, 46, 46);
+  border-radius: 10px;
+}
+.Label {
+  width: 15%;
+  padding: 3px;
+  border-radius: 10px;
+  background-color: #2d2d2d;
+}
+.Value {
+  width: 10%;
+}
+
+.SliderContainer {
+  width: 75%;
+}
+.ReverbControlBar,
+.SpeedControlBar,
+.PitchControlBar {
+  width: 90%;
+}
+
+/* Style de base */
+.ReverbControlBar,
+.SpeedControlBar,
+.PitchControlBar {
+  -webkit-appearance: none; /* supprime le style par défaut */
+  appearance: none;
+  width: 300px; /* largeur totale */
+  height: 8px; /* épaisseur de la barre */
+  background: #646cff;
+  outline: none;
+  cursor: pointer;
+  border-radius: 0; /* supprime les arrondis de la barre */
+}
+
+/* --- BARRE (track) --- */
+.ReverbControlBar::-webkit-slider-runnable-track,
+.SpeedControlBar::-webkit-slider-runnable-track,
+.PitchControlBar::-webkit-slider-runnable-track {
+  background: #646cff;
+  height: 8px;
+  border-radius: 0; /* rectangle */
+}
+.ReverbControlBar::-moz-range-track,
+.SpeedControlBar::-moz-range-track,
+.PitchControlBar::-moz-range-track {
+  background: #646cff;
+  height: 8px;
+  border-radius: 0;
+}
+
+/* --- POUCE (thumb) --- */
+.ReverbControlBar::-webkit-slider-thumb,
+.SpeedControlBar::-webkit-slider-thumb,
+.PitchControlBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px; /* largeur du pouce */
+  height: 15px; /* hauteur du pouce */
+  background: white;
+  cursor: pointer;
+  border-radius: 0; /* carré */
+  margin-top: -3px; /* pour bien centrer sur la barre */
+}
+.ReverbControlBar::-moz-range-thumb,
+.SpeedControlBar::-moz-range-thumb,
+.PitchControlBar::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  background: white;
+  cursor: pointer;
+  border-radius: 0; /* carré */
+}
+
+.NavigationBar {
+  position: absolute;
+  background: #646cff;
+  border-radius: 15px;
+  height: 50px;
+  width: 450px;
+  display: flex;
+  justify-content: space-between;
+  right: 10px;
+  top: 10px;
+}
+.buttons {
+  width: 40%;
+  height: 100%;
+  left: 0;
+  display: flex;
+  gap: 5px;
+}
+.home,
+.about {
+  background-color: #2d2d2d;
+  font-size: 0.9em;
+}
+
+.IconSide {
+  height: 100%;
+  width: 22%;
+  float: right;
+  display: flex;
+  justify-content: space-between;
+}
+
+.SettingsIconContainer,
+.UserIconContainer {
+  width: 40%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Settings,
+.User {
+  max-height: 100%;
+  width: 80%;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+}
+.BottomButtons {
+  position: absolute;
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.ReadButton,
+.SaveButton {
+  width: 30%;
+}
+.SaveIcon {
+  position: absolute;
+  width: 50px;
+  aspect-ratio: 1/1;
+  display: flex;
+  left: 50px;
+  bottom: 39%;
+  cursor: pointer;
+}
+.SoundWaveContainer {
+  position: absolute;
+  width: 50vw;
+  height: 25vh;
+  bottom: 30%;
+  left: 50%;
+  transform: translateX(-65%);
+  background-color: white;
+}
+.EffectsField {
+  position: absolute;
+  width: 150px;
+  height: 5vh;
+  right: 60px;
+  bottom: 50%;
+  display: flex;
+  flex-direction: column;
+  background-color: #2d2d2d;
+  transition: all 2s;
+}
+
+.MenuHeader {
+  width: 100%;
+  height: 45px;
+  right: 10px;
+  bottom: 48.5%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 10px;
+  background-color: #646cff;
+  gap: 5px;
+}
+.MenuButtonContainer {
+  width: 40px;
+  height: 80%;
+  display: flex;
+}
+.micIcon {
+  display: flex;
+  padding: 10px;
+}
+.Title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.Menu {
+  width: 100%;
+  background-color: #2d2d2d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.Effects {
+  background-color: #2d2d2d;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 2px;
+  font-size: 0.7em;
+}
+.RobotisationButton,
+.AlienificationButton,
+.OnVerra {
+  width: 75%;
+  height: 35px;
+}
+
+.SoundWaveContainer {
+  background-color: #2d2d2d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.SoundColumnContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #463d56;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.SoundColumn {
+  width: 100%;
+  border-radius: 20px;
+  transition: height 0.1s ease;
+}

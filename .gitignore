@@ -1,0 +1,38 @@
+#Node modules
+node_modules/
+
+#builds (React + Electron)
+build/
+dist/
+out/
+
+#Electron packaged apps
+*.exe
+*.apps
+*.dmg
+*.snap
+
+#logs & debug
+*.log
+
+#temp files
+recordings_tmp/
+temp/
+userData/
+*.wav
+
+#IDE
+.vscode/
+.DS_Store
+
+
+#compiled binaries
+*.obj
+*.o
+*.so
+*.dll
+*.node
+*.exe
+
+#Environment Variables
+.env
