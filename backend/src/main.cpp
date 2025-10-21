@@ -109,14 +109,17 @@ int main(int argc, char* argv[]) {
     int pitch = 1;
     int rev = 0;
     char effect = 'R';
+    string path = "../../outputs/output";
    
     if (argc != 1){
         speed = stoi(argv[1]);
         pitch = stoi(argv[2]);
         rev = stoi(argv[3]);
         effect = argv[4][0];
+        path = argv[5];
     }
-        
+
+    
     
     PaError err;
     err = Pa_Initialize();
@@ -154,7 +157,7 @@ int main(int argc, char* argv[]) {
     Pa_StopStream(stream);
     Pa_CloseStream(stream);
 
-    string path = "../../outputs/output";
+    
     if(effect == 'R'){
         Robotisation Robot;
         vector<vector<float>> splitted_signal = buffer.chunk_vector(1024);

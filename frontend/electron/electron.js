@@ -1,28 +1,14 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
-const { spawn } = require("child_process");
+const { spawn, exec } = require("child_process");
 const path = require("path");
+const fs = require("fs");
 
 let win = null;
 let cpp = null;
-
-function nameformation(parsedArgs) {
-  const basePath = path.join(__dirname, "../../outputs"); // module path, pas masqué !
-  let fileName = "output";
-
-  if (parsedArgs[3] === "R") fileName += "Robotised";
-  if (parsedArgs[2] !== 0) fileName += "Reverbed";
-  if (fileName === "") fileName = "output"; // fichier par défaut
-
-  const fullPath = path.resolve(basePath, `${fileName}.wav`);
-  const fileURL = `file:///${fullPath.replace(/\\/g, "/")}`; // compatible Windows/macOS/Linux
-
-  console.log("🔊 Fichier audio :", fileURL);
-  return fileURL;
-}
+let output_path = null;
 
 function startCppProcess(config) {
   cpp = spawn("../../backend/build/test.exe", config);
-  console.log(config);
 
   cpp.stdout.on("data", (data) => {
     const str = data.toString();
@@ -42,6 +28,14 @@ function stopCppProcess() {
     cpp.stdin.write("stop\n");
     cpp = null;
   }
+  // cpp.stdout.on("data", (data) => {
+  //   const str = data.toString();
+
+  //   const output = data.toString().trim();
+  //   if (output.endsWith(".wav")) {
+  //   }
+  //     lastTempWavPath = output;
+  // });
 }
 
 function createWindow() {
@@ -49,7 +43,10 @@ function createWindow() {
     width: 800,
     height: 700,
     resizable: false,
-    webPreferences: { nodeIntegration: true, contextIsolation: false },
+    webPreferences: {
+      contextIsolation: false,
+      nodeIntegration: true,
+    },
   });
 
   // Détecte si on est en dev ou prod
@@ -85,15 +82,15 @@ ipcMain.on("start-cpp", (event, args) => {
   let reverb = String(args.reverb);
   let effect = String(args.effect);
 
+  output_path = app.getPath("temp");
+  output_path += "\\output";
+
   /**@type string[] */
   let parsedArgs = [];
   if (args) {
-    parsedArgs = [speed, pitch, reverb, effect];
+    parsedArgs = [speed, pitch, reverb, effect, output_path];
   }
-
-  const path = nameformation(parsedArgs);
-
-  win.webContents.send("fileName", path);
+  console.log(parsedArgs);
 
   console.log("---------CPP STARTED---------");
   startCppProcess(parsedArgs); // J'envoie ça sous forme de tableau
@@ -101,6 +98,26 @@ ipcMain.on("start-cpp", (event, args) => {
 ipcMain.on("stop-cpp", () => {
   console.log("---------CPP STOPPED---------");
   stopCppProcess();
+});
+
+ipcMain.on("read-file", (event, config) => {
+  if (config.effect == "R") {
+    output_path += "Robotised";
+  }
+  if (config.reverb != 0) {
+    output_path += "Reverbed";
+  }
+  output_path += ".wav";
+
+  console.log(output_path);
+  if (fs.existsSync(output_path)) {
+    exec(`start ${output_path}`, (err) => {
+      if (err) console.error(err);
+      else console.log("Lecture WAV lancée avec l’application par défaut");
+    });
+  } else {
+    console.log("Fichier .wav introuvable !");
+  }
 });
 
 app.on("window-all-closed", () => {

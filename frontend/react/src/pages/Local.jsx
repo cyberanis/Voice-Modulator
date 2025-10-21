@@ -5,8 +5,8 @@ import EffectsMenu from "../Components/EffectsMenu";
 import SoundWave from "../Components/SoundWave";
 import { useEffect, useState } from "react";
 import "./Local.css";
+
 const { ipcRenderer } = window.require("electron");
-const path = require("path");
 
 function Local() {
   /*J'initialise les useState de la controlBar*/
@@ -23,13 +23,6 @@ function Local() {
   const [toggle, setToggle] = useState(0);
 
   /*State de l'audio*/
-  const [audioPath, setAudioPath] = useState(null);
-
-  useEffect(() => {
-    ipcRenderer.on("fileName", (event, path) => {
-      setAudioPath(path);
-    });
-  });
 
   /*Je crée un composant déstiné à passer en commentaire de la requête au Backend */
   const config = {
@@ -47,15 +40,11 @@ function Local() {
     console.log(config);
   };
 
-  const path = toggle === 0 ? "audio.png" : "arret.png";
-
-  let audiopath = ipcRenderer.on("fileName", (event, path) => {});
-
-  const playSound = () => {
-    console.log(audioPath);
-    const audio = new Audio(`${audioPath}`);
-    audio.play().catch((err) => console.error("erreur de lecture: ", err));
+  const handleReading = () => {
+    ipcRenderer.send("read-file", config);
   };
+
+  const path = toggle === 0 ? "audio.png" : "arret.png";
 
   useEffect(() => {
     const handler = (event, newData) => {
@@ -97,9 +86,7 @@ function Local() {
         <Button
           label="Read"
           className="ReadButton"
-          onClick={() => {
-            playSound();
-          }}
+          onClick={handleReading}
         ></Button>
         <Button
           label="Save"
