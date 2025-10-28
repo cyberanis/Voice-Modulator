@@ -162,13 +162,6 @@ int main(int argc, char* argv[]) {
         Robotisation Robot;
         vector<vector<float>> splitted_signal = buffer.chunk_vector(1024);
         buffer.signal = Robot.split_and_robotise(splitted_signal);
-        path += "Robotised";
-    }
-    else if(effect == 'A'){
-        path += "Alienified";
-    }
-    else if(effect == 'O'){
-        path += "Other";
     }
 
 
@@ -176,10 +169,8 @@ int main(int argc, char* argv[]) {
     if(pitch != 1);
     if(rev != 0){
         buffer.reverb(rev, 0.5);
-        path += "Reverbed";
     }
 
-    path += ".wav";
     writeWav(path, buffer.signal, 44100);
 
     cout << path << endl;

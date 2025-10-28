@@ -5,8 +5,9 @@ const fs = require("fs");
 
 let win = null;
 let cpp = null;
-let output_path = null;
+let output_path = null; //C'est la variable qui gère le chemin vers le fichier .wav
 
+// fonction permettant de lancer l'enregistrement
 function startCppProcess(config) {
   cpp = spawn("../../backend/build/test.exe", config);
 
@@ -23,21 +24,15 @@ function startCppProcess(config) {
   });
 }
 
+// Fonction permettant d'arreter l'enregistrement
 function stopCppProcess() {
   if (cpp) {
     cpp.stdin.write("stop\n");
     cpp = null;
   }
-  // cpp.stdout.on("data", (data) => {
-  //   const str = data.toString();
-
-  //   const output = data.toString().trim();
-  //   if (output.endsWith(".wav")) {
-  //   }
-  //     lastTempWavPath = output;
-  // });
 }
 
+// fonction permettant de créer la fenetre
 function createWindow() {
   win = new BrowserWindow({
     width: 800,
@@ -68,13 +63,29 @@ function createWindow() {
   }
 }
 
+// permet la confection du chemin vers le fichier d'enregistrement de l'audio
+function confection_path(config) {
+  output_path = app.getPath("temp");
+  output_path += "\\output";
+
+  if (config.effect == "R") {
+    output_path += "Robotised";
+  }
+  if (config.reverb != 0) {
+    output_path += "Reverbed";
+  }
+  output_path += ".wav";
+}
+
+// permet de shutdown le programme
 app.on("before-quit", () => {
   if (cpp) cpp.kill();
 });
 
 console.log("------WINDOW CREATED---------");
-app.whenReady().then(createWindow);
+app.whenReady().then(createWindow); // permet de lancer la fenetre
 
+// recoit l'instruction depuis le renderer par IPCRenderer pour lancer la fonction d'enregistrement
 ipcMain.on("start-cpp", (event, args) => {
   /**@type string */
   let speed = String(args.speed);
@@ -82,8 +93,13 @@ ipcMain.on("start-cpp", (event, args) => {
   let reverb = String(args.reverb);
   let effect = String(args.effect);
 
-  output_path = app.getPath("temp");
-  output_path += "\\output";
+  //supprime le fichier precedent non enregistré avant de passer au prochain
+  if (output_path != null) {
+    const oldpath = output_path;
+    const cpp = spawn("../../backend/build/remove.exe", [oldpath]);
+  }
+
+  confection_path(args);
 
   /**@type string[] */
   let parsedArgs = [];
@@ -95,21 +111,15 @@ ipcMain.on("start-cpp", (event, args) => {
   console.log("---------CPP STARTED---------");
   startCppProcess(parsedArgs); // J'envoie ça sous forme de tableau
 });
+
+// arrete l'enregistrement sous l'instruction du renderer
 ipcMain.on("stop-cpp", () => {
   console.log("---------CPP STOPPED---------");
   stopCppProcess();
 });
 
+// permet de lire l'enregistrement
 ipcMain.on("read-file", (event, config) => {
-  if (config.effect == "R") {
-    output_path += "Robotised";
-  }
-  if (config.reverb != 0) {
-    output_path += "Reverbed";
-  }
-  output_path += ".wav";
-
-  console.log(output_path);
   if (fs.existsSync(output_path)) {
     exec(`start ${output_path}`, (err) => {
       if (err) console.error(err);
@@ -120,6 +130,7 @@ ipcMain.on("read-file", (event, config) => {
   }
 });
 
+// permet de fermer tous les processus après la fermeture de la fenetre
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
