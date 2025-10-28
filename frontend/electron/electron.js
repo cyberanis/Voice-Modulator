@@ -130,33 +130,32 @@ ipcMain.on("read-file", (event, config) => {
   }
 });
 
-ipcMain.on("save-temp-file", (event)=>{
-  try{
-
-    if (! fs.existsSync(output_path)){ // si le fichier n'existe pas
-      throw new Error("le fichier " + output_path + "n'existe pas !")
+ipcMain.on("save-temp-file", async (event) => {
+  try {
+    if (!fs.existsSync(output_path)) {
+      // si le fichier n'existe pas
+      throw new Error("le fichier " + output_path + "n'existe pas !");
     }
 
-    const {canceled, filepath} = await dialog.showSaveDialog({ // canceled = false si l'utilisateur choisi un chemin 
+    const { canceled, filePath } = await dialog.showSaveDialog({
+      // canceled = false si l'utilisateur choisi un chemin
       // filepath est le chemin choisi pour l'enregistrement
       title: "Enregistrement",
       defaultPath: "output.wav",
-      filters: [{name: "fichiers audios", extensions: ["wav"]}]
-    })
+      filters: [{ name: "fichiers audios", extensions: ["wav"] }],
+    });
 
-    if (canceled || !filepath){
-      return {success: false, message: "Enregistrement annulé"}
+    if (canceled || !filePath) {
+      return { success: false, message: "Enregistrement annulé" };
     }
 
-
-    fs.copyFileSync(output_path, filepath);
-  }
-  catch(error){
+    fs.copyFileSync(output_path, filePath);
+    const cpp = spawn("../../backend/build/remove.exe", [output_path]);
+  } catch (error) {
     console.log("erreur lors de la sauvegarde :", error);
-    return {success:false, message: error.message};
+    return { success: false, message: error.message };
   }
-})
-
+});
 
 // permet de fermer tous les processus après la fermeture de la fenetre
 app.on("window-all-closed", () => {

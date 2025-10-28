@@ -44,6 +44,10 @@ function Local() {
     ipcRenderer.send("read-file", config);
   };
 
+  const handleSaving = () => {
+    ipcRenderer.send("save-temp-file");
+  };
+
   const path = toggle === 0 ? "audio.png" : "arret.png";
 
   useEffect(() => {
@@ -91,9 +95,7 @@ function Local() {
         <Button
           label="Save"
           className="SaveButton"
-          onClick={() => {
-            alert("Encore en phase de dev !");
-          }}
+          onClick={handleSaving}
         ></Button>
       </div>
       <div className="SaveIcon">
