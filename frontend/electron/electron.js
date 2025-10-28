@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const { spawn, exec } = require("child_process");
 const path = require("path");
 const fs = require("fs");
@@ -129,6 +129,62 @@ ipcMain.on("read-file", (event, config) => {
     console.log("Fichier .wav introuvable !");
   }
 });
+
+ipcMain.on("save-temp-file", (event)=>{
+  try{
+
+    if (! fs.existsSync(output_path)){ // si le fichier n'existe pas
+      throw new Error("le fichier " + output_path + "n'existe pas !")
+    }
+
+    const {canceled, filepath} = await dialog.showSaveDialog({ // canceled = false si l'utilisateur choisi un chemin 
+      // filepath est le chemin choisi pour l'enregistrement
+      title: "Enregistrement",
+      defaultPath: "output.wav",
+      filters: [{name: "fichiers audios", extensions: ["wav"]}]
+    })
+
+    if (canceled || !filepath){
+      return {success: false, message: "Enregistrement annulé"}
+    }
+
+
+    fs.copyFileSync(output_path, filepath);
+  }
+  catch(error){
+    console.log("erreur lors de la sauvegarde :", error);
+    return {success:false, message: error.message};
+  }
+})
+
+
+ipcMain.on("save-temp-file", (event)=>{
+  try{
+
+    if (! fs.existsSync(output_path)){ // si le fichier n'existe pas
+      throw new Error("le fichier " + output_path + "n'existe pas !")
+    }
+
+    const {canceled, filepath} = await dialog.showSaveDialog({ // canceled = false si l'utilisateur choisi un chemin 
+      // filepath est le chemin choisi pour l'enregistrement
+      title: "Enregistrement",
+      defaultPath: "output.wav",
+      filters: [{name: "fichiers audios", extensions: ["wav"]}]
+    })
+
+    if (canceled || !filepath){
+      return {success: false, message: "Enregistrement annulé"}
+    }
+
+
+    fs.copyFileSync(output_path, filepath);
+  }
+  catch(error){
+    console.log("erreur lors de la sauvegarde :", error);
+    return {success:false, message: error.message};
+  }
+})
+
 
 // permet de fermer tous les processus après la fermeture de la fenetre
 app.on("window-all-closed", () => {
